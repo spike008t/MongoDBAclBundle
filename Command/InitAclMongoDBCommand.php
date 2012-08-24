@@ -11,7 +11,7 @@
 
 namespace IamPersistent\MongoDBAclBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\Command;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -20,8 +20,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Richard Shank <develop@zestic.com>
  */
-class InitAclMongoDBCommand extends Command
+class InitAclMongoDBCommand extends ContainerAwareCommand
 {
+    private $container;
+    
     /**
      * @see Command
      */
@@ -38,6 +40,9 @@ class InitAclMongoDBCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        
+        $this->container = $this->getContainer();
+        
         // todo: change services and paramters when the configuration has been finalized
         $mongo = $this->container->get('doctrine.odm.mongodb.default_connection');
         $this->dbName = $this->container->getParameter('doctrine.odm.mongodb.security.acl.database');

@@ -35,6 +35,9 @@ class IamPersistentMongoDBAclExtension extends AbstractDoctrineExtension
         $configuration = new Configuration($container->getParameter('kernel.debug'));
         $config = $processor->processConfiguration($configuration, $configs);
 
+        if (empty($config['default_database']))
+            $config['default_database'] = 'mongodb_sf2_acl';
+        
         if (isset($config['acl_provider'])) {
             $this->loadAcl($config['acl_provider'], $config['default_database'], $container);
         }
@@ -51,7 +54,7 @@ class IamPersistentMongoDBAclExtension extends AbstractDoctrineExtension
 
     public function getAlias()
     {
-        return 'iampersistent_mongodb_acl';
+        return 'iam_persistent_mongo_db_acl';
     }
 
     /**
@@ -63,4 +66,21 @@ class IamPersistentMongoDBAclExtension extends AbstractDoctrineExtension
     {
         return 'http://symfony.com/schema/dic/doctrine/odm/mongodb';
     }
+    
+    protected function getMappingObjectDefaultName() {
+        return 'Document';
+    }
+
+    protected function getMappingResourceConfigDirectory() {
+        return 'Resources/config/doctrine';
+    }
+
+    protected function getMappingResourceExtension() {
+        return 'mongodb.acl';
+    }
+
+    protected function getObjectManagerElementName( $name ) {
+        return 'doctrine.odm.mongodb.security.acl.'.$name;
+    }
+
 }
